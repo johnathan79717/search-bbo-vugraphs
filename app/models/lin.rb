@@ -73,6 +73,8 @@ class Lin < ActiveRecord::Base
                  when :ew; board % 2
                  end
         sequence = ['-', *sequence] if offset == 1
+        p "offset = #{offset}"
+        p "sequence = #{sequence}"
         ret << find_hand(event, board, hands, auction.dup, offset, sequence, explanation)
         ret << find_hand(event, board, hands, auction.dup, offset, ['-', '-', *sequence], explanation)
       end
@@ -86,7 +88,7 @@ class Lin < ActiveRecord::Base
   end
 
   def self.find_hand event, board, hands, auction, offset, sequence, explanation
-    p board, auction, offset, sequence
+    # p board, auction, offset, sequence
     ret = ""
     if sequence.size <= auction.size and 
                         auction[0, sequence.size] == sequence

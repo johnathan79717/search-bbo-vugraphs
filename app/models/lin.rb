@@ -72,10 +72,10 @@ class Lin < ActiveRecord::Base
                  when :ns; 1 - board % 2
                  when :ew; board % 2
                  end
-        p offset
         sequence = ['-', *sequence] if offset == 1
         ret << find_hand(event, board, hands, auction, offset, sequence, explanation)
         ret << find_hand(event, board, hands, auction, offset, ['-', '-', *sequence], explanation)
+        p offset, ret
       end
       puts "Warning: No boards found in #{filename}" if parsed.empty?
       if parsed != total

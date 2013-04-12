@@ -13,7 +13,7 @@ class Lin < ActiveRecord::Base
     Lin.create(:body => res.body, :filename => linname)
   end
 
-  def self.find_board(sequence)
+  def self.find_board(argv)
     ret = ""
     self.all.each do |file|
       lin = file.body
@@ -72,6 +72,7 @@ class Lin < ActiveRecord::Base
                  when :ns; 1 - board % 2
                  when :ew; board % 2
                  end
+        sequence = argv
         sequence = ['-', *sequence] if offset == 1
         p "offset = #{offset}"
         p "sequence = #{sequence}"

@@ -85,23 +85,16 @@ class Lin < ActiveRecord::Base
 
   def self.find_hand event, board, hands, auction, offset, sequence, explanation
     # p board, auction, offset, sequence
+    ret = ""
     if sequence.size <= auction.size and 
                         auction[0, sequence.size] == sequence
-      puts "#{event}, Board #{board}"
-      if ARGV[0] == '-d'
-        opener = hands[(board + 2 + offset) % 4].split(/S|H|D|C/)
-        responder = hands[(board + 4 + offset) % 4].split(/S|H|D|C/)      
-      else
-        opener = hands[(board + 1 + offset) % 4].split(/S|H|D|C/)
-        responder = hands[(board + 3 + offset) % 4].split(/S|H|D|C/)
-      end
+      ret << "#{event}, Board #{board}\n"
+      opener = hands[(board + 1 + offset) % 4].split(/S|H|D|C/)
+      responder = hands[(board + 3 + offset) % 4].split(/S|H|D|C/)
+
       opener << '' if opener.size == 4
       responder << '' if responder.size == 4
-      puts "#{' ' * 20 if ARGV[0] == '-d'}S #{opener[1].ljust(37)} S #{responder[1]}"
-      puts "#{' ' * 20 if ARGV[0] == '-d'}H #{opener[2].ljust(37)} H #{responder[2]}"
-      puts "#{' ' * 20 if ARGV[0] == '-d'}D #{opener[3].ljust(37)} D #{responder[3]}"
-      puts "#{' ' * 20 if ARGV[0] == '-d'}C #{opener[4].ljust(37)} C #{responder[4]}"
-      puts
+      ret << "\n"
       (offset...auction.size).step(2) do |i|
         if i + 1 < auction.size
           space = (40 - auction[i].size - auction[i+1].size) / 2
@@ -109,16 +102,16 @@ class Lin < ActiveRecord::Base
           auction[i] << "#{auction[i+1]}"
         end
         if (i-offset) % 4 == 0
-          print auction[i].ljust(40)
+          ret << auction[i].ljust(40)
         else
-          puts auction[i]
+          ret << auction[i] << "\n"
         end
       end
       # p alerted_auction
-      puts
-      puts '', explanation unless explanation.empty?
-      puts
+      ret << "\n\n"
+      ret << explanation << "\n" unless explanation.empty?
+      ret << "\n"
     end
+    return ret
   end
-
 end

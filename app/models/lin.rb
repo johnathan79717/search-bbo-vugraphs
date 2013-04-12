@@ -38,7 +38,7 @@ class Lin < ActiveRecord::Base
         elsif players[7] =~ n && players[5] =~ f || players[5] =~ n && players[7] =~ f
           [:c, :ew]
         else
-          puts "Warning: Can\'t find Fantunes in #{filename}"
+          puts "Warning: Can\'t find Fantunes"
         end
       next unless room
       total = lin.scan(/\|qx\|#{room}(\d+)/).flatten
@@ -72,8 +72,8 @@ class Lin < ActiveRecord::Base
                  when :ew; board % 2
                  end
         sequence = ['-', *sequence] if offset == 1
-        find event, board, hands, auction, offset, sequence, explanation
-        find event, board, hands, auction, offset, ['-', '-', *sequence], explanation
+        find_hand event, board, hands, auction, offset, sequence, explanation
+        find_hand event, board, hands, auction, offset, ['-', '-', *sequence], explanation
       end
       puts "Warning: No boards found in #{filename}" if parsed.empty?
       if parsed != total
@@ -83,7 +83,7 @@ class Lin < ActiveRecord::Base
     end
   end
 
-  def self.find event, board, hands, auction, offset, sequence, explanation
+  def self.find_hand event, board, hands, auction, offset, sequence, explanation
     # p board, auction, offset, sequence
     if sequence.size <= auction.size and 
                         auction[0, sequence.size] == sequence

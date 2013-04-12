@@ -14,7 +14,7 @@ class Lin < ActiveRecord::Base
   end
 
   def self.find_board(sequence)
-    # p board, auction_temp, offset, sequence
+    p board, auction_temp, offset, sequence
     ret = ""
     self.all.each do |file|
       lin = file.body

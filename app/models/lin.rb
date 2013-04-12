@@ -90,13 +90,13 @@ class Lin < ActiveRecord::Base
     ret = ""
     if sequence.size <= auction.size and 
                         auction[0, sequence.size] == sequence
-      ret << "#{event}, Board #{board}\n"
+      ret << "#{event}, Board #{board}<br>"
       opener = hands[(board + 1 + offset) % 4].split(/S|H|D|C/)
       responder = hands[(board + 3 + offset) % 4].split(/S|H|D|C/)
 
       opener << '' if opener.size == 4
       responder << '' if responder.size == 4
-      ret << "\n"
+      ret << "<br>"
       (offset...auction.size).step(2) do |i|
         if i + 1 < auction.size
           space = (40 - auction[i].size - auction[i+1].size) / 2
@@ -106,13 +106,13 @@ class Lin < ActiveRecord::Base
         if (i-offset) % 4 == 0
           ret << auction[i].ljust(40)
         else
-          ret << auction[i] << "\n"
+          ret << auction[i] << "<br>"
         end
       end
       # p alerted_auction
-      ret << "\n\n"
-      ret << explanation << "\n" unless explanation.empty?
-      ret << "\n"
+      ret << "<br>"
+      ret << explanation << "<br>" unless explanation.empty?
+      ret << "<br>"
     end
     return ret
   end

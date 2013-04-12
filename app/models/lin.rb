@@ -14,6 +14,7 @@ class Lin < ActiveRecord::Base
   end
 
   def self.find_board(sequence)
+    ret = ""
     self.all.each do |file|
       lin = file.body
       unless lin =~ /vg\|\s*(.*?)\s*,\s*(.*?)\s*,/
@@ -72,8 +73,8 @@ class Lin < ActiveRecord::Base
                  when :ew; board % 2
                  end
         sequence = ['-', *sequence] if offset == 1
-        find_hand event, board, hands, auction, offset, sequence, explanation
-        find_hand event, board, hands, auction, offset, ['-', '-', *sequence], explanation
+        ret << find_hand event, board, hands, auction, offset, sequence, explanation
+        ret << find_hand event, board, hands, auction, offset, ['-', '-', *sequence], explanation
       end
       puts "Warning: No boards found in #{filename}" if parsed.empty?
       if parsed != total
@@ -81,6 +82,7 @@ class Lin < ActiveRecord::Base
         puts "Warning: #{filename}: board #{total - parsed} not parsed"
       end
     end
+    return ret
   end
 
   def self.find_hand event, board, hands, auction, offset, sequence, explanation

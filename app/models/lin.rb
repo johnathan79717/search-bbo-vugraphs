@@ -97,8 +97,10 @@ class Lin < ActiveRecord::Base
       opener = hands[(board + 1 + offset) % 4].split(/S|H|D|C/)
       responder = hands[(board + 3 + offset) % 4].split(/S|H|D|C/)
 
-      opener << '' if opener.size == 4
-      responder << '' if responder.size == 4
+      puts "S #{opener[1].ljust(37)} S #{responder[1]}"
+      puts "H #{opener[2].ljust(37)} H #{responder[2]}"
+      puts "D #{opener[3].ljust(37)} D #{responder[3]}"
+      puts "C #{opener[4].ljust(37)} C #{responder[4]}"
       ret << "<br>"
       (offset...auction.size).step(2) do |i|
         if i + 1 < auction.size

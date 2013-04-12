@@ -6,9 +6,13 @@ gem 'rails', '3.2.6'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 # gem 'sqlite3'
-gem "sqlite3", :groups => [:development, :test]
-gem "pg", :groups => [:production]
+group :development, :test do
+  gem 'sqlite3'
+end
 
+group :production do
+  gem 'pg'
+end
 gem 'json'
 
 # Gems used only for assets and not required

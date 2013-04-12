@@ -14,7 +14,6 @@ class Lin < ActiveRecord::Base
   end
 
   def self.find_board(sequence)
-    p board, auction_temp, offset, sequence
     ret = ""
     self.all.each do |file|
       lin = file.body
@@ -87,7 +86,7 @@ class Lin < ActiveRecord::Base
   end
 
   def self.find_hand event, board, hands, auction, offset, sequence, explanation
-    # p board, auction, offset, sequence
+    p board, auction_temp, offset, sequence
     ret = ""
     if sequence.size <= auction.size and 
                         auction[0, sequence.size] == sequence

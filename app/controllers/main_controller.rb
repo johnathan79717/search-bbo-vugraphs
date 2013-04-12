@@ -1,5 +1,6 @@
 class MainController < ApplicationController
   def index
-    path = 'http://www.bridgebase.com/tools/vugraph_linfetch.php?id=27348'
+    if params[:sequence]
+      @sequence = params[:sequence].split
   end
 end

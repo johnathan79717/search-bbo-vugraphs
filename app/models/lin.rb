@@ -17,13 +17,9 @@ class Lin < ActiveRecord::Base
     ret = ""
     self.all.each do |file|
       lin = file.body
-      unless lin =~ /vg\|\s*(.*?)\s*,\s*(.*?)\s*,/
-        raise 'Event name not matched in ' + filename
-      end
+      lin =~ /vg\|\s*(.*?)\s*,\s*(.*?)\s*,/
       event = $1 + ', ' + $2
-      unless lin =~ /pn\|(.*?)\|/
-        raise 'Player names not matched in ' + event
-      end
+      lin =~ /pn\|(.*?)\|/
       players = $1.split ','
       lin.gsub! /nt\|.*?\|/, ''
       lin.gsub! 'pg||', ''
@@ -36,28 +32,25 @@ class Lin < ActiveRecord::Base
           [:o, :ew]
         elsif players[6] =~ n && players[4] =~ f || players[4] =~ n && players[6] =~ f
           [:c, :ns]
-        elsif players[7] =~ n && players[5] =~ f || players[5] =~ n && players[7] =~ f
+        elsif players[7] =~ n && players[5] =~ f ||players[5] =~ n && players[7] =~ f
           [:c, :ew]
         else
           puts "Warning: Can\'t find Fantunes"
         end
       next unless room
-      total = lin.scan(/\|qx\|#{room}(\d+)/).flatten
-      parsed = []
-      # p lin
-      regex = case room
-                when :o; /\|qx\|o(\d+)\|(st\|\|)?md\|(.*?)\|sv\|.\|(((mb|an)\|[^|]*\|)+)/
-                when :c; /\|qx\|c(\d+)\|(st\|\|)?md\|(.*?)\|sv\|.\|(((mb|an)\|[^|]*\|)+)/
-              end
+      if room == :o
+        players = players[0..3].join(',')
+      else
+        players = players[4..7].join(',')
+      end
+
       lin.scan /\|qx\|#{room}(\d+)\|(st\|\|)?md\|(.*?)\|sv\|.\|(((mb|an)\|[^|]*\|)+)/ do |board, _, hands, alerted_auction|
-        parsed << board
         board = board.to_i
         if hands.size < 68
           # puts "Warning: no hands in #{filename}, board #{board}"
           next
         end
-        hands = hands.split(',')
-        hands[0] = hands[0][1, 17]
+        hands = hands[1..-1]
         alerted_auction = alerted_auction[3...-1].split('|mb|')
         explanation = ''
         auction = alerted_auction.map do |bid|
@@ -65,27 +58,28 @@ class Lin < ActiveRecord::Base
             explanation << "#{$1}: #{$3}\n" if $3
             $1
           end.gsub('p', '-').gsub('d', 'X').gsub('r', 'XX')
-        end
+        end.join(' ')
+        Board.create(:number      => board,
+                     :players     => players,
+                     :hands       => hands, 
+                     :auction     => auction,
+                     :explanation => explanation, 
+                     :event       => event)
         # p alerted_auction
         # p auction
-        offset = case direction
-                 when :ns; 1 - board % 2
-                 when :ew; board % 2
-                 end
-        sequence = argv
-        sequence = ['-', *sequence] if offset == 1
-        p "offset = #{offset}"
-        p "sequence = #{sequence}"
-        ret << find_hand(event, board, hands, auction.dup, offset, sequence, explanation)
-        ret << find_hand(event, board, hands, auction.dup, offset, ['-', '-', *sequence], explanation)
-      end
-      puts "Warning: No boards found in #{filename}" if parsed.empty?
-      if parsed != total
-        # p lin
-        puts "Warning: #{filename}: board #{total - parsed} not parsed"
+        # offset = case direction
+        #          when :ns; 1 - board % 2
+        #          when :ew; board % 2
+        #          end
+        # sequence = argv
+        # sequence = ['-', *sequence] if offset == 1
+        # p "offset = #{offset}"
+        # p "sequence = #{sequence}"
+        # ret << find_hand(event, board, hands, auction.dup, offset, sequence, explanation)
+        # ret << find_hand(event, board, hands, auction.dup, offset, ['-', '-', *sequence], explanation)
       end
     end
-    return ret
+    # return ret
   end
 
   def self.find_hand event, board, hands, auction, offset, sequence, explanation

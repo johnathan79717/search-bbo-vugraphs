@@ -8,6 +8,6 @@
       %td West
       %td North
       %td East
-    / %tr
-    /   - @boards.players.split(',').each do |player|
-    /     %td= player
+    %tr
+      - board.players.split(',').each do |player|
+        %td= player

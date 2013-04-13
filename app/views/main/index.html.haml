@@ -10,10 +10,10 @@
       %td South
     %tr
       - players = board.players.split(',')
-      %td= player[1]
-      %td= player[2]
-      %td= player[3]
-      %td= player[0]
+      %td= players[1]
+      %td= players[2]
+      %td= players[3]
+      %td= players[0]
     %tr
       - shift = board.number % 4
       - shift.times do

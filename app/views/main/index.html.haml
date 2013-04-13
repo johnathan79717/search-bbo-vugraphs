@@ -1,4 +1,5 @@
 %h1 Search Fantunes
+%p pass = '-', double = 'X', redouble = 'XX', bids should be separated with space. E.g. 1C - 1D - 1N
 = form_tag({}, :method => :get) do
   Enter the bidding sequence you want to search: (e.g. 1C - 1D - 1N)
   %br
@@ -46,8 +47,9 @@
         - if (n + shift) % 4 == 0 && n != 0
           %tr
         %td{:align => 'center'}= to_figure(bid)
-  %p- board.explanation.split('\n').each do |item|
-    = to_figure(item)
-    %br
+  %p
+    - board.explanation.split('\n').each do |item|
+      = to_figure(item)
+      %br
 
 

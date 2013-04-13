@@ -4,10 +4,10 @@
   %h3= link_to "#{board.event}, Board #{board.number}", "http://www.bridgebase.com/tools/handviewer.html?linurl=#{board.link}", :target => '_blank'
   %table
     %tr
-      %td{width: 100} West
-      %td{width: 100} North
-      %td{width: 100} East
-      %td{width: 100} South
+      %td{:width => 100, :align => 'center'} West
+      %td{:width => 100, :align => 'center'} North
+      %td{:width => 100, :align => 'center'} East
+      %td{:width => 100, :align => 'center'} South
     %tr
       - players = board.players.split(',')
       %td= players[1]
@@ -22,5 +22,6 @@
         - if (n + shift) % 4 == 0 && n != 0
           %tr
         %td= bid
+  %p= board.explanation
 
 

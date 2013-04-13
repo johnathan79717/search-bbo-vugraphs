@@ -5,8 +5,18 @@
   - hands = board.hands.split(',')
   %table
     %tr
-      %td
+      %td{:width => 100}
         = "Board #{board.number}"
+        %br
+        = dealer(board.number)
+        %br
+        = vul(board.number)
+      %td{:width => 100}
+        = print_hand(hands[2])
+      %td{:width => 100}
+    %tr
+
+  %br
   %table
     %tr
       %td{:width => 100, :align => 'center'} West

@@ -63,4 +63,22 @@ class Board < ActiveRecord::Base
                    :event       => event)
     end
   end
+
+  def self.find_auction sequence
+    onepass = '-' + sequence
+    twopass = '-' + onepass
+    threepass = '-' + twopass
+    Board.all.find_all do |board|
+      players = board.players.split(',')
+      offset = if players[0] =~ /nunes/i || players[0] =~ /fantoni/i
+                  (board.number - 1) % 2
+                else
+                  (board.number) % 2
+      if offset
+        board.auction.starts_with?(onepass) || board.auction.starts_with?(threepass)
+      else
+        board.auction.starts_with?(sequence) || board.auction.starts_with?(twopass)
+      end
+    end
+  end
 end

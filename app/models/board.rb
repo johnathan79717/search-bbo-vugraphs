@@ -70,12 +70,13 @@ class Board < ActiveRecord::Base
     threepass = '-' + twopass
     Board.all.find_all do |board|
       players = board.players.split(',')
-      offset = if players[0] =~ /nunes/i || players[0] =~ /fantoni/i
-                  (board.number - 1) % 2
-                else
-                  (board.number) % 2
-                end
-      if offset
+      if (players[0] =~ /nunes/i || players[0] =~ /fantoni/i) # sit ns
+        shift = board.number % 2 == 0 # shift when even board
+      else
+        shift = board.number % 2 == 1 # else shift at odd board
+      end
+
+      if shift
         board.auction.starts_with?(onepass) || board.auction.starts_with?(threepass)
       else
         board.auction.starts_with?(sequence) || board.auction.starts_with?(twopass)

@@ -31,7 +31,7 @@ module MainHelper
   end
 
   def diamonds
-    '<font color="FF0000">&diam;</font>'.html_safe
+    '<font color="FF0000">&diams;</font>'.html_safe
   end
 
   def clubs

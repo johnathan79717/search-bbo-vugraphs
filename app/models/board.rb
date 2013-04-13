@@ -31,7 +31,7 @@ class Board < ActiveRecord::Base
       else
         puts "Warning: Can\'t find Fantunes"
       end
-    next unless room
+    return unless room
     if room == :o
       players = players[0..3].join(',')
     else
@@ -42,7 +42,7 @@ class Board < ActiveRecord::Base
       board = board.to_i
       if hands.size < 68
         # puts "Warning: no hands in #{filename}, board #{board}"
-        next
+        return
       end
       hands = hands[1..-1]
       alerted_auction = alerted_auction[3...-1].split('|mb|')

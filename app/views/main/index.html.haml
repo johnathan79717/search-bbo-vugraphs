@@ -47,7 +47,7 @@
           %tr
         %td{:align => 'center'}= to_figure(bid)
   %p- board.explanation.split('\n').each do |item|
-    = item
+    = to_figure(item)
     %br
 
 

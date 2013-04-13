@@ -1,5 +1,9 @@
 class MainController < ApplicationController
   def index
-    @boards = Board.find_auction '1C'
+    if params[:seqence]
+      @boards = Board.find_auction params[:sequence]
+    else
+      @boards = []
+    end
   end
 end

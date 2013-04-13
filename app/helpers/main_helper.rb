@@ -19,7 +19,7 @@ module MainHelper
 
   def print_hand(hand)
     h = hand.split(/S|H|D|C/)
-    "#{spades} #{h[1]}#{hearts} #{h[2]}<br>#{diamonds} #{h[3]}<br>#{clubs} #{h[4]}".html_safe
+    "#{spades} #{h[1]}<br>#{hearts} #{h[2]}<br>#{diamonds} #{h[3]}<br>#{clubs} #{h[4]}".html_safe
   end
 
   def spades
@@ -27,11 +27,11 @@ module MainHelper
   end
 
   def hearts
-    '<font color=\"FF0000\">&hearts;</font>'.html_safe
+    '<font color="FF0000">&hearts;</font>'.html_safe
   end
 
   def diamonds
-    '<font color=\"FF0000\">&diam;</font>'.html_safe
+    '<font color="FF0000">&diam;</font>'.html_safe
   end
 
   def clubs

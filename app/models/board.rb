@@ -65,9 +65,9 @@ class Board < ActiveRecord::Base
   end
 
   def self.find_auction sequence
-    onepass = '-' + sequence
-    twopass = '-' + onepass
-    threepass = '-' + twopass
+    onepass = '- ' + sequence
+    twopass = '- ' + onepass
+    threepass = '- ' + twopass
     Board.all.find_all do |board|
       players = board.players.split(',')
       if (players[0] =~ /nunes/i || players[0] =~ /fantoni/i) # sit ns

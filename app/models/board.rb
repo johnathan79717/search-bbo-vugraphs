@@ -1,10 +1,11 @@
 require 'net/http'
 
 class Board < ActiveRecord::Base
-  attr_accessible :number, :players, :hands, :auction, :explanation, :event
+  attr_accessible :number, :players, :hands, :auction, :explanation, :event, :link
 
   def self.download(linname)
-    url = URI.parse("http://www.bridgebase.com/tools/vugraph_linfetch.php?id=#{linname}")
+    link = "http://www.bridgebase.com/tools/vugraph_linfetch.php?id=#{linname}"
+    url = URI.parse(link)
     req = Net::HTTP::Get.new(url.to_s)
     res = Net::HTTP.start(url.host, url.port) do |http|
       http.request(req)
@@ -54,6 +55,7 @@ class Board < ActiveRecord::Base
         end.gsub('p', '-').gsub('d', 'X').gsub('r', 'XX')
       end.join(' ')
       Board.create(:number      => board,
+                   :link        => link,
                    :players     => players,
                    :hands       => hands, 
                    :auction     => auction,

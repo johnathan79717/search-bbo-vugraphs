@@ -1,4 +1,4 @@
-class DropTableLin < ActiveRecord::Migration
+class DropTableLins < ActiveRecord::Migration
   def up
    drop_table :lins
   end

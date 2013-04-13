@@ -1,8 +1,9 @@
 %h1 Search Fantunes
 = form_tag({}, :method => :get) do
   Enter the bidding sequence you want to search: (e.g. 1C - 1D - 1N)
+  %br
   = text_area_tag :sequence
-  = submit_tag
+  = submit_tag 'Search'
 - @boards.each do |board|
   %h3= link_to "#{board.event}, Board #{board.number}", "http://www.bridgebase.com/tools/handviewer.html?linurl=#{board.link}", :target => '_blank'
   - hands = board.hands.split(',')

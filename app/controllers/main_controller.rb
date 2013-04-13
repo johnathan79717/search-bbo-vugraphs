@@ -1,6 +1,5 @@
 class MainController < ApplicationController
   def index
-    # @sequence = (params[:sequence] || ['1C'])
-    # @results = Lin.find_board(@sequence)
+    @boards = Board.find_auction '1C'
   end
 end

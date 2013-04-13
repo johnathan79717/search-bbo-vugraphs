@@ -27,11 +27,11 @@ module MainHelper
   end
 
   def hearts
-    'font color=\"FF0000\">&hearts;</font>'.html_safe
+    '<font color=\"FF0000\">&hearts;</font>'.html_safe
   end
 
   def diamonds
-    'font color=\"FF0000\">&diam;</font>'.html_safe
+    '<font color=\"FF0000\">&diam;</font>'.html_safe
   end
 
   def clubs
@@ -39,9 +39,6 @@ module MainHelper
   end
 
   def to_figure bid
-    bid.gsub(/S/, spades)
-    bid.gsub(/H/, hearts)
-    bid.gsub(/D/, diamonds)
-    bid.gsub(/C/, clubs)
+    bid.gsub(/S/, spades).gsub(/H/, hearts).gsub(/D/, diamonds).gsub(/C/, clubs).html_safe
   end
 end

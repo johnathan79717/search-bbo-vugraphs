@@ -74,6 +74,7 @@ class Board < ActiveRecord::Base
                   (board.number - 1) % 2
                 else
                   (board.number) % 2
+                end
       if offset
         board.auction.starts_with?(onepass) || board.auction.starts_with?(threepass)
       else

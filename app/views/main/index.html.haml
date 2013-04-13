@@ -11,10 +11,15 @@
         = dealer(board.number)
         %br
         = vul(board.number)
-      %td{:width => 100}
-        = print_hand(hands[2])
+      %td{:width => 100}= print_hand(hands[2])
       %td{:width => 100}
     %tr
+      %td= print_hand(hands[1])
+      %td
+      %td= print_hand(hands[3])
+    %tr
+      %td
+      %td= print_hand(hands[0])
 
   %br
   %table

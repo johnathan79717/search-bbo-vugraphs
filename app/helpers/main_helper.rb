@@ -19,6 +19,6 @@ module MainHelper
 
   def print_hand(hand)
     h = hand.split(/S|H|D|C/)
-    return "&spades; #{h[1]}<br>&hearts; #{h[2]}<br>&diams; #{h[3]}<br>&clubs; #{h[4]}".html_safe
+    return "&spades; #{h[1]}<br><font color=\"FF0000\">&hearts;</font> #{h[2]}<br><font color=\"FF0000\">&diams;</font> #{h[3]}<br>&clubs; #{h[4]}".html_safe
   end
 end

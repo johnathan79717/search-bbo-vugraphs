@@ -14,3 +14,13 @@
       %td= player[2]
       %td= player[3]
       %td= player[0]
+    %tr
+      - shift = board.number % 4
+      - shift.times do
+        %td
+      - board.auction.split(' ').each_with_index do |bid, n|
+        - if (n + shift) % 4 == 0 && n != 0
+          %tr
+        %td= bid
+
+

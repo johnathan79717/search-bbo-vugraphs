@@ -2,6 +2,7 @@
 
 - @boards.each do |board|
   %h3= link_to "#{board.event}, Board #{board.number}", "http://www.bridgebase.com/tools/handviewer.html?linurl=#{board.link}", :target => '_blank'
+  - hands = board.hands.split(',')
   %table
     %tr
       %td
@@ -10,6 +11,7 @@
         = dealer(board.number)
         %br
         = vul(board.number)
+      %td
   %table
     %tr
       %td{:width => 100, :align => 'center'} West

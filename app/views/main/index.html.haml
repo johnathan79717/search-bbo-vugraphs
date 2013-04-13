@@ -5,14 +5,14 @@
   - hands = board.hands.split(',')
   %table
     %tr
-      %td{:width => 100}
+      %td
         = "Board #{board.number}"
         %br
         = dealer(board.number)
         %br
         = vul(board.number)
-      %td{:width => 100}= print_hand(hands[2])
-      %td{:width => 100}
+      %td= print_hand(hands[2])
+      %td
     %tr
       %td= print_hand(hands[1])
       %td

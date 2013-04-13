@@ -1,13 +1,13 @@
 %h1 Search Fantunes
 
 - @boards.each do |board|
-  %h3= link_to "#{board.event}. Board #{board.number}", "http://www.bridgebase.com/tools/handviewer.html?linurl=#{board.link}", :target => '_blank'
-  / %table
-  /   %tr
-  /     %td South
-  /     %td West
-  /     %td North
-  /     %td East
-  /   %tr
-  /     - @boards.players.split(',').each do |player|
-  /       %td= player
+  %h3= link_to "#{board.event}, Board #{board.number}", "http://www.bridgebase.com/tools/handviewer.html?linurl=#{board.link}", :target => '_blank'
+  %table
+    %tr
+      %td South
+      %td West
+      %td North
+      %td East
+    / %tr
+    /   - @boards.players.split(',').each do |player|
+    /     %td= player

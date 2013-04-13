@@ -2,12 +2,12 @@
 
 - @boards.each do |board|
   %h3= link_to "#{board.event}. Board #{board.number}", board.link, :target => '_blank'
-  %table
-    %tr
-      %td South
-      %td West
-      %td North
-      %td East
-    %tr
-      - @boards.players.split(',').each do |player|
-        %td= player
+  / %table
+  /   %tr
+  /     %td South
+  /     %td West
+  /     %td North
+  /     %td East
+  /   %tr
+  /     - @boards.players.split(',').each do |player|
+  /       %td= player

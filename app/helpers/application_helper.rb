@@ -5,6 +5,7 @@ module ApplicationHelper
     when 2; 'East'
     when 3; 'South'
     else;   'West'
+    end
   end
 
   def vul(number)
@@ -13,5 +14,6 @@ module ApplicationHelper
     when 2; 'N/S'
     when 3; 'E/W'
     else;   'All'
+    end
   end
 end

@@ -41,7 +41,7 @@
       - board.auction.split(' ').each_with_index do |bid, n|
         - if (n + shift) % 4 == 0 && n != 0
           %tr
-        %td{:align => 'center'}= bid
+        %td{:align => 'center'}= to_figure(bid)
   %p= board.explanation
 
 

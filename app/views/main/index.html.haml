@@ -2,9 +2,9 @@
 %p by Jonathan, Po-Hsiang Hao, bbo id: johnathan
 %p Any advice or suggestions please email johnathan79717@gmail.com
 %p pass = '-', double = 'X', redouble = 'XX', bids should be separated with space.
+%p Last update: 2013/04/13, including 2013 Vanderbilt
 = form_tag({}, :method => :get) do
-  Enter the bidding sequence you want to search: (e.g. 1C X XX or 1C - 1D - 1N)
-  %br
+  %p Enter the bidding sequence you want to search: (e.g. 1C X XX or 1C - 1D - 1N)
   = text_field_tag :sequence
   = submit_tag 'Search'
 - @boards.each do |board|

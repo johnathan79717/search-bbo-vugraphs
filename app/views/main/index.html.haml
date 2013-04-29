@@ -7,7 +7,7 @@
   %h3 Enter the bidding sequence you want to search: (e.g. 1C X XX or 1C - 1D - 1N)
   = text_field_tag :sequence
   = submit_tag 'Search'
-%h4= "#{@boards.size} results for #{@sequence}" if @sequence
+%h2= "#{@boards.size} results for #{@sequence}" if @sequence
 - @boards.each do |board|
   %h3= link_to "#{board.event}, Board #{board.number}", "http://www.bridgebase.com/tools/handviewer.html?linurl=#{board.link}", :target => '_blank'
   - hands = board.hands.split(',')

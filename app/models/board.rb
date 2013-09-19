@@ -3,8 +3,26 @@ require 'net/http'
 class Board < ActiveRecord::Base
   attr_accessible :number, :players, :hands, :auction, :explanation, :event, :link
 
-  def self.download(linname)
-    link = "http://www.bridgebase.com/tools/vugraph_linfetch.php?id=#{linname}"
+  def self.update
+    url = "http://www.bridgebase.com/vugraph_archives/vugraph_archives.php?command=all"
+    url = URI.parse(url)
+    req = Net::HTTP::Get.new(url.to_s)
+    res = Net::HTTP.start(url.host, url.port) do |http|
+      http.request(req)
+    end
+    archive = res.body
+    archive.scan(/<tr BGCOLOR=#E0.*?tr>/m) do |row|
+      if row =~ /nunes/i && row =~ /fantoni/i
+        row.match %r{<a href="(http://www.bridgebase.com/tools/vugraph_linfetch.php\?id=(\d+))">Download}m
+        link = $1
+        next if Board.find_by_link(link)
+        self.download(link)
+      end
+    end
+    return
+  end
+
+  def self.download(link)
     url = URI.parse(link)
     req = Net::HTTP::Get.new(url.to_s)
     res = Net::HTTP.start(url.host, url.port) do |http|
@@ -62,6 +80,7 @@ class Board < ActiveRecord::Base
                    :explanation => explanation, 
                    :event       => event)
     end
+    return
   end
 
   def self.find_auction sequence

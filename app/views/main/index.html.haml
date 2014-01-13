@@ -15,27 +15,23 @@
   - hands = board.hands.split(',')
   - players = board.players.split(',')
   - nsVul, ewVul = vul(board.number)
+  - nDealer, eDealer, sDealer, wDealer = dealer(board.number)
   %table
     %tr
       %td.board
         %table.num
           %tr
             %td.corner
-            %td{:class => nsVul}
+            %td{:class => nsVul}= nDealer
             %td.corner
           %tr
-            %td{:class => ewVul}
+            %td{:class => ewVul}= wDealer
             %td.num= board.number
-            %td{:class => ewVul}
+            %td{:class => ewVul}= eDealer
           %tr
             %td.corner
-            %td{:class => nsVul}
+            %td{:class => nsVul}= sDealer
             %td.corner
-        / = "Board #{board.number}"
-        / %br
-        / = dealer(board.number)
-        / %br
-        / = vul(board.number)
       %td.board= print_hand(players[2], hands[2])
       %td.board
     %tr

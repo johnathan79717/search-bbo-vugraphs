@@ -8,21 +8,23 @@
 }
 
 td.num {
-  width: 30px;
-  height: 30px;
+  width: 35px;
+  height: 35px;
   text-align: center;
   background-color: lightskyblue;
 }
 
 .vul {
+  text-align: center;
   background-color: red;
 }
 
 .nv {
+  text-align: center;
   background-color: limegreen;
 }
 
 .corner {
-  width: 10px;
-  height: 10px;
+  width: 15px;
+  height: 15px;
 }

@@ -1,10 +1,10 @@
 module MainHelper
   def dealer(number)
     case number % 4
-    when 1; 'North'
-    when 2; 'East'
-    when 3; 'South'
-    else;   'West'
+    when 1; return 'D', '', '', ''
+    when 2; return '', 'D', '', ''
+    when 3; return '', '', 'D', ''
+    else;   return '', '', '', 'D'
     end
   end
 

@@ -1,3 +1,5 @@
+= stylesheet_link_tag 'index'
+
 %h1 Search Fantunes
 %p This website is for those who are interested in the Fantunes system. You can search for any bidding sequence from the vugraph files of Fantoni and Nunes.
 %p by Jonathan Po-Hsiang Hao, bbo id: johnathan, any advice or suggestions please email johnathan79717@gmail.com
@@ -11,45 +13,53 @@
 - @boards.each do |board|
   %h3= link_to "#{board.event}, Board #{board.number}", "http://www.bridgebase.com/tools/handviewer.html?linurl=#{board.link}", :target => '_blank'
   - hands = board.hands.split(',')
+  - players = board.players.split(',')
+  - nsVul, ewVul = vul(board.number)
   %table
     %tr
-      %td
-        = "Board #{board.number}"
-        %br
-        = dealer(board.number)
-        %br
-        = vul(board.number)
-      %td= print_hand(hands[2])
-      %td
+      %td.board
+        %table.num
+          %tr
+            %td.corner
+            %td{:class => nsVul}
+            %td.corner
+          %tr
+            %td{:class => ewVul}
+            %td.num= board.number
+            %td{:class => ewVul}
+          %tr
+            %td.corner
+            %td{:class => nsVul}
+            %td.corner
+        / = "Board #{board.number}"
+        / %br
+        / = dealer(board.number)
+        / %br
+        / = vul(board.number)
+      %td.board= print_hand(players[2], hands[2])
+      %td.board
     %tr
-      %td= print_hand(hands[1])
-      %td
-      %td= print_hand(hands[3])
+      %td.board= print_hand(players[1], hands[1])
+      %td.board
+      %td.board= print_hand(players[3], hands[3])
     %tr
-      %td
-      %td= print_hand(hands[0])
-
+      %td.board
+      %td.board= print_hand(players[0], hands[0])
   %br
   %table
     %tr
-      %td{:width => 150, :align => 'center'} West
-      %td{:width => 150, :align => 'center'} North
-      %td{:width => 150, :align => 'center'} East
-      %td{:width => 150, :align => 'center'} South
-    %tr
-      - players = board.players.split(',')
-      %td{:align => 'center'}= players[1]
-      %td{:align => 'center'}= players[2]
-      %td{:align => 'center'}= players[3]
-      %td{:align => 'center'}= players[0]
+      %td.bid W
+      %td.bid N
+      %td.bid E
+      %td.bid S
     %tr
       - shift = board.number % 4
       - shift.times do
-        %td{:align => 'center'}
+        %td.bid
       - board.auction.split(' ').each_with_index do |bid, n|
         - if (n + shift) % 4 == 0 && n != 0
           %tr
-        %td{:align => 'center'}= to_figure(bid)
+        %td.bid= to_figure(bid)
   %p
     - board.explanation.split('\n').each do |item|
       = to_figure(item)

@@ -10,16 +10,16 @@ module MainHelper
 
   def vul(number)
     case (number / 4 + number) % 4
-    when 1; 'None'
-    when 2; 'N/S'
-    when 3; 'E/W'
-    else;   'All'
+    when 1; return 'nv', 'nv'
+    when 2; return 'vul', 'nv'
+    when 3; return 'nv', 'vul'
+    else;   return 'vul', 'vul'
     end
   end
 
-  def print_hand(hand)
+  def print_hand(player, hand)
     h = hand.split(/S|H|D|C/)
-    "#{spades} #{h[1]}<br>#{hearts} #{h[2]}<br>#{diamonds} #{h[3]}<br>#{clubs} #{h[4]}".html_safe
+    "#{player}<br>#{spades} #{h[1]}<br>#{hearts} #{h[2]}<br>#{diamonds} #{h[3]}<br>#{clubs} #{h[4]}".html_safe
   end
 
   def spades
@@ -41,4 +41,6 @@ module MainHelper
   def to_figure bid
     bid.gsub(/S/, spades).gsub(/H/, hearts).gsub(/D/, diamonds).gsub(/C/, clubs).html_safe
   end
+
+
 end

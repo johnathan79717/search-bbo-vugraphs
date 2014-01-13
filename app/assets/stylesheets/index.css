@@ -1,0 +1,28 @@
+.bid {
+  text-align: center;
+  width: 70px;
+}
+
+.board {
+  width: 100px;
+}
+
+td.num {
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  background-color: lightskyblue;
+}
+
+.vul {
+  background-color: red;
+}
+
+.nv {
+  background-color: limegreen;
+}
+
+.corner {
+  width: 10px;
+  height: 10px;
+}

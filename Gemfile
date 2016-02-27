@@ -46,3 +46,4 @@ gem 'jquery-rails'
 # gem 'ruby-debug'
 
 gem 'haml'
+gem 'test-unit'

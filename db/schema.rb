@@ -11,18 +11,37 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130413211100) do
+ActiveRecord::Schema.define(:version => 20160228165240) do
 
   create_table "boards", :force => true do |t|
     t.integer  "number"
-    t.string   "players"
+    t.string   "seats"
     t.string   "hands"
     t.string   "auction"
     t.string   "explanation"
-    t.string   "event"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
-    t.string   "link"
+    t.text     "comments"
+    t.integer  "vugraph_id"
+  end
+
+  create_table "players", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "players_boards", :id => false, :force => true do |t|
+    t.integer "player_id"
+    t.integer "board_id"
+  end
+
+  create_table "vugraphs", :force => true do |t|
+    t.text     "lin_file"
+    t.string   "event"
+    t.string   "segment"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
 end

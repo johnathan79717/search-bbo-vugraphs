@@ -18,6 +18,7 @@ module MainHelper
   end
 
   def print_hand(player, hand)
+    return 'nil' if hand.nil?
     h = hand.split(/S|H|D|C/)
     "#{player}<br>#{spades} #{h[1]}<br>#{hearts} #{h[2]}<br>#{diamonds} #{h[3]}<br>#{clubs} #{h[4]}".html_safe
   end

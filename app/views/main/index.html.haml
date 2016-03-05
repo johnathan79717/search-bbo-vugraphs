@@ -1,19 +1,20 @@
 = stylesheet_link_tag 'index'
 
-%h1 Search Fantunes
-%p This website is for those who are interested in the Fantunes system. You can search for any bidding sequence from the vugraph files of Fantoni and Nunes.
-%p by Po-Hsiang Hao, a Taiwanese student, bbo id: johnathan, any advice or suggestions please email johnathan79717@gmail.com
-%p Last update: 2014/01/13
-%p pass = '-', double = 'X', redouble = 'XX', bids should be separated by space.
+%h1 BBO Vugraph Search
+
+%p pass = '-', double = 'X', redouble = 'XX', bids should be separated by single spaces.
 = form_tag({}, :method => :get) do
-  %h3 Enter the bidding sequence you want to search: (e.g. 1C X XX or 1C - 1D - 1N)
-  = text_field_tag :sequence
-  = submit_tag 'Search'
+  %h3 Enter the bidding sequence you want to search: (e.g. "1C X XX" or "1C - 1D - 1N")
+  %p= text_field_tag :sequence, @sequence, placeholder: 'Sequence', onClick: 'this.select();'
+  %p= text_field_tag :player, params[:player], placeholder: 'Player', onClick: 'this.select();'
+  %p= submit_tag 'Search'
+
 %h2= "#{@boards.size} results for #{@sequence}" if @sequence
 - @boards.each do |board|
-  %h3= link_to "#{board.event}, Board #{board.number}", "http://www.bridgebase.com/tools/handviewer.html?linurl=#{board.link}", :target => '_blank'
+  - vugraph = board.vugraph
+  %h3= link_to "#{vugraph.event}, #{vugraph.segment}, Board #{board.number}", @link_prefix + vugraph.id.to_s, :target => '_blank'
   - hands = board.hands.split(',')
-  - players = board.players.split(',')
+  - players = board.seats.split(',')
   - nsVul, ewVul = vul(board.number)
   - nDealer, eDealer, sDealer, wDealer = dealer(board.number)
   %table

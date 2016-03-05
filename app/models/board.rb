@@ -1,6 +1,7 @@
 require 'net/http'
 
 class ParseError < StandardError
+  attr_accessor :message
   def initialize(msg)
     self.message = msg
   end
@@ -11,15 +12,19 @@ class Board < ActiveRecord::Base
   belongs_to :vugraph
   has_many :players_boards, class_name: 'PlayersBoard'
   has_many :players, class_name: 'Player', through: :players_boards
-  #has_and_belongs_to_many :players
 
   def parse_room_number players
-    m = @string.match(/\Aqx\s*\|\s*(?<room>o|c)(?<number>\d+)\s*\|/)
-    raise ParseError.new 'Bad room or number' if m.nil?
+    m = @string.match(/\Aqx\|(?<room>o|c)(?<number>\d+)/)
+    if m.nil?
+      p @string
+      raise ParseError.new 'Bad room or number'
+    end
 
     if m['room'] == 'o'
+      raise ParseError.new 'Not enough player ' + players.inspect if players.size < 4
       @players = players[0..3]
     else
+      raise ParseError.new 'Not enough player ' + players.inspect if players.size < 8
       @players = players[4..7]
     end
 
@@ -27,75 +32,98 @@ class Board < ActiveRecord::Base
   end
 
   def parse_hands
-    m = @string.match(/\|\s*md\s*\|(?<hands>.*?)\|sv/)
-    raise ParseError.new 'Bad hands' if m.nil?
-    self.hands = m['hands']
+    m = @string.match(/(?:\d|\|)md\|(?<hands>.*?)\|/)
+    if m.nil?
+      p @string
+      raise ParseError.new 'Bad hands'
+    end
+    hands = m['hands'].split(',')
+    if hands.size == 4
+      self.hands = m['hands']
+    elsif hands.size == 3
+      fourth = ['AKQJT98765432'] * 4
+      hands.each do |h|
+        h.split(/[SHDC]/)[1..4].each_with_index do |v, i|
+          fourth[i] = fourth[i].delete(v)
+        end
+      end
+      self.hands = m['hands'] + ',S'+fourth[0]+'H'+fourth[1]+'D'+fourth[2]+'C'+fourth[3]
+    else
+      raise ParseError.new 'Bad hands' if m.nil?
+    end
   end
     
   def parse_auction
-    m = @string.match(/\|\s*sv\s*\|(?<auction>(?:.|\n)*?)\s*\|\s*pc\s*\|/)
+    m = @string.match(/\|mb\|(?<auction>.*?(?:\|mb\|p!?(?:\|an\|[^|]*)?){3})/i)
     raise ParseError.new 'Bad auction' if m.nil?
     
-    #p m['auction']
     self.explanation = ''
-    self.auction = m['auction'][5..-1].split(/\s*\|\s*mb\s*\|\s*/).map do |bid|
-      bid.gsub(/^(?<bid>[^!|]+)!?(?:\|an\|(?<an>.*))?/) do |match|
-        self.explanation << "#{$~['bid']}: #{$~['an']}\n" if $~['an']
-        $~['bid']
-      end.gsub('p', '-').gsub('d', 'X').gsub('r', 'XX')
-    end.join(' ')
+    self.auction = m['auction'].split(/\|+mb\|+/i)
+    if auction.size == 1
+      self.auction = auction[0].scan(/[PDR]|[1-7](?:[CDHS]|NT?)/i)
+    end
+    self.auction.map! do |bid|
+      next if bid == '-'
+      if bid !~ /\A!?(?<bid>(?:[PDRX]|[1-7](?:[CDHS]|NT?)))(?:[^|]*)(?:\|?AN\|(?<an>.*))?\Z/i
+        p m['auction']
+        p self.auction
+        raise ParseError.new "Bad bid: " + bid.inspect
+      else
+        bid = $~['bid'].upcase
+        an = $~['an']
+        self.explanation << "#{bid}: #{an}\n" if an
+      end
+      bid = '-' if bid == 'P'
+      bid = 'X' if bid == 'D'
+      bid = 'XX' if bid == 'R'
+      if bid !~ /\A(?:-|X|XX|[1-7](?:[CDHS]|NT?))\Z/
+        raise ParseError.new "Bad bid: " + bid.inspect
+      end
+      bid
+    end
+    if auction.size < 4
+      raise ParseError.new 'Auction too short'
+    end
+    self.auction = auction.join(' ')
+    if self.auction !~ /-\s+-\s+-\s*\Z/
+      p self.auction
+      raise ParseError.new 'Auctions must end with three passes'
+    end
   end
 
   def parse_comments
     self.comments = ''
-    @string.gsub!(/\|\s*nt\s*\|\s*(?<comment>.*?)\s*\|pg\|/) do |m|
-      #p $~['comment']
-      self.comments << $~['comment'] + "\n"
+    @string.gsub!(/\|nt\|(?<comment>.*?)(?:\|pg)?\|/) do |m|
+      if $~['comment'].size > 0
+        self.comments << $~['comment'] + "\n"
+      end
       ''
     end
   end
 
   def parse(string, players, vugraph)
-    @string = string
+    @string = string.gsub("\r\n", '').gsub(/pa\|\d+\|/, '')
 
-    begin
-      parse_comments
-      parse_room_number players
-      parse_hands
-      parse_auction
-      save
-      p @players
-      self.seats = @players.map do |player|
-        #p player
-        self.players << player
-        #p player
-        #player.name
-        'anything'
-      end.join(' ')
-      self.vugraph = vugraph
-      save
-    rescue ParseError => error
-      puts error.message
-      p @string
+    parse_comments
+
+    @string.gsub!('|pg|', '')
+    parse_room_number players
+    parse_hands
+    parse_auction
+    self.seats = @players.join(',')
+    @players.each do |name|
+      name.force_encoding('utf-8')
+      self.players << Player.find_or_create_by_name(name.upcase)
     end
+    self.vugraph = vugraph
   end
 
   def self.find_auction sequence
-    onepass = '- ' + sequence
-    twopass = '- ' + onepass
-    threepass = '- ' + twopass
     Board.all.find_all do |board|
-      players = board.players.split(',')
-      if (players[0] =~ /nunes/i || players[0] =~ /fantoni/i) # sit ns
-        shift = board.number % 2 == 0 # shift when even board
+      if board.auction.nil?
+        p board
       else
-        shift = board.number % 2 == 1 # else shift at odd board
-      end
-
-      if shift
-        board.auction.starts_with?(onepass) || board.auction.starts_with?(threepass)
-      else
-        board.auction.starts_with?(sequence) || board.auction.starts_with?(twopass)
+        board.auction.match(/\A(- ){,3}#{sequence}/)
       end
     end
   end

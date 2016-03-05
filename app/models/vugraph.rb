@@ -2,7 +2,32 @@ class Vugraph < ActiveRecord::Base
   attr_accessible :lin_file, :event, :segment
   has_many :boards
 
+  def self.download!(id)
+    if id.class == Range
+      id.each do |x|
+        download!(x)
+      end
+      return
+    end
+    if exists? id
+      v = find(id)
+      v.boards.each do |b|
+        b.delete
+      end
+      v.delete
+    end
+
+    download(id)
+  end
+
+
   def self.download(id)
+    if id.class == Range
+      id.each do |x|
+        download(x)
+      end
+      return
+    end
     if !exists? id
       url = URI.parse("http://www.bridgebase.com/tools/vugraph_linfetch.php?id=#{id}")
       req = Net::HTTP::Get.new(url.to_s)
@@ -11,13 +36,12 @@ class Vugraph < ActiveRecord::Base
       end
 
       if res.body == "Fetch failed (2)"
-        print 'File not exists'
+        puts "#{id}.lin does not exists"
       else
-        #p res.body
         vugraph = new do |v|
           v.id = id
-          v.parse(res.body)
-          v.save
+          v.lin_file = res.body.gsub("\r\n", '')
+          v.parse
         end
       end
     end
@@ -25,37 +49,85 @@ class Vugraph < ActiveRecord::Base
 
   def parse_event_segment
     m = lin_file.match(/vg\|\s*(?<event>.*?)\s*,\s*(?<segment>.*?)\s*,/)
-    raise ParseError.new 'Bad event and segment' if m.nil?
+    if m.nil?
+      p lin_file
+      raise ParseError.new 'Bad event and segment'
+    end
+
     self.event = m['event']
     self.segment = m['segment']
   end
 
   def parse_players
-    m = lin_file.match(/pn\|(?<players>.*?)\|/)
-    raise ParseError.new 'Bad players' if m.nil?
-    @players = m['players'].split(',').map do |name|
-      name.upcase!
-      Player.find_by_name(name) || Player.create(name: name)
+    m = lin_file.match(/p[nw]\|(?<players>(?:.|\r\n)*?)\|/)
+    if m.nil?
+      p lin_file
+      raise ParseError.new 'Bad players'
     end
+    @players = m['players'].gsub('\r\n', '').split(/\s*,\s*/)
   end
 
   def parse_board
-    lin_file.scan(/(?<board_string>^qx(?:\s|.)*?)(?=\Z|\s*\|\s*qx\s*\|)/) do |match|
+    @@unsaved_boards = []
+    error_count = 0
+    lin_file.scan(/\|(?<board_string>qx(?:\s|.)*?)(?=\Z|\s*\|\s*qx\s*\|)/) do |match|
       board_string = $~['board_string']
-      board = Board.create
-      board.parse(board_string, @players, self)
+      if board_string !~ /mb/
+        error_count += 1
+        next
+      end
+      Board.new do |b|
+        begin
+          b.parse(board_string, @players, self)
+        rescue ParseError => error
+          error_count += 1
+          if error.message =~ /\ANot enough player/
+            puts error.message
+          else
+            puts "Error: #{id}.lin"
+            puts error.message + "\n" + board_string.inspect
+            if error.message !~ /ABad auction/
+              Blacklist.add(id)
+            end
+          end
+        else
+          @@unsaved_boards << b
+        end
+      end
+    end
+    if @@unsaved_boards.empty?
+      p lin_file
+      puts 'No boards found'
+      #raise ParseError.new 'No boards found'
+    end
+    if lin_file.scan(/\|qx\|/).size != @@unsaved_boards.size + error_count
+      raise ParseError.new 'Some boards are not parsed'
     end
   end
 
-  def parse(lin_file)
-    self.lin_file = lin_file
-
+  def parse
     begin
       parse_event_segment
       parse_players
       parse_board
     rescue ParseError => error
-      print error.message + ': ' + id.to_s
+      puts "Error: #{id}.lin"
+      Blacklist.add(id)
+      puts error.message
+    else
+      puts "#{id} has #{@@unsaved_boards.size} boards"
+      begin
+        save
+        @@unsaved_boards.each do |b|
+          b.save
+        end
+      rescue ActiveRecord::StatementInvalid => e
+        puts e.message.split("\n")[0]
+        delete
+        @@unsaved_boards.each do |b|
+          b.delete
+        end
+      end
     end
   end
       

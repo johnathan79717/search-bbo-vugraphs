@@ -1,7 +1,7 @@
 class MainController < ApplicationController
   def download
     render text: 'Start downloading'
-    Vugraph.download(Vugraph.last.id-10..params[:id].to_i)
+    Vugraph.download(1..params[:id].to_i)
   end
 
   def last

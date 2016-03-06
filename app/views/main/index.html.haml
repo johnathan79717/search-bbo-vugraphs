@@ -9,12 +9,20 @@
   Any bugs, desired features, or even comments are welcome.
   =link_to 'https://github.com/johnathan79717/search-bbo-vugraphs/issues'
 
-%p pass = '-', double = 'X', redouble = 'XX', bids should be separated by single spaces.
+%hr
+
 = form_tag({}, :method => :get) do
   %h3 Enter the bidding sequence you want to search: (e.g. "1C X XX" or "1C - 1D - 1N")
+  %p pass = '-', double = 'X', redouble = 'XX', bids should be separated by single spaces.
   %p= text_field_tag :sequence, @sequence, placeholder: 'Sequence', onClick: 'this.select();'
   %p= text_field_tag :player, params[:player], placeholder: 'Player', onClick: 'this.select();'
   %p= submit_tag 'Search'
+
+%hr
+%p
+  I pay Heroku $9/month for hosting this website. You're welcome to donate any amount to help me keep this website.
+  =render 'donate'
+%hr
 
 %h2= "#{@boards.size} results for #{@sequence}" if @sequence
 - @boards.each do |board|
@@ -68,5 +76,4 @@
     - board.explanation.split('\n').each do |item|
       = to_figure(item)
       %br
-
 

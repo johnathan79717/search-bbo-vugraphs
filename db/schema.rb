@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160229094248) do
+ActiveRecord::Schema.define(:version => 20160305160429) do
 
   create_table "blacklists", :force => true do |t|
     t.datetime "created_at", :null => false
@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(:version => 20160229094248) do
     t.datetime "updated_at",  :null => false
     t.text     "comments"
     t.integer  "vugraph_id"
+    t.string   "room"
   end
 
   create_table "players", :force => true do |t|

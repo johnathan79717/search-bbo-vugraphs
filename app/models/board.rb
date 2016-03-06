@@ -20,6 +20,7 @@ class Board < ActiveRecord::Base
       raise ParseError.new 'Bad room or number'
     end
 
+    self.room = m['room']
     if m['room'] == 'o'
       raise ParseError.new 'Not enough player ' + players.inspect if players.size < 4
       @players = players[0..3]

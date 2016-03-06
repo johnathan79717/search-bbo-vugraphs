@@ -1,4 +1,13 @@
 class MainController < ApplicationController
+  def download
+    render text: 'Start downloading'
+    Vugraph.download(Vugraph.last.id-10..params[:id].to_i)
+  end
+
+  def last
+    render text: Vugraph.last.id
+  end
+
   def index
     @sequence = params[:sequence]
     @link_prefix = 'http://www.bridgebase.com/tools/handviewer.html?linurl=http://www.bridgebase.com/tools/vugraph_linfetch.php?id='

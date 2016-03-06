@@ -56,5 +56,7 @@ SearchFantunes::Application.routes.draw do
   # Note: This route will make all actions in every controller accessible via GET requests.
   # match ':controller(/:action(/:id))(.:format)'
 
-  root :to => 'main#index'
+  root to: 'main#index', as: 'index'
+  get 'download/:id', :to => 'main#download'
+  get 'vugraph/last', :to => 'main#last'
 end

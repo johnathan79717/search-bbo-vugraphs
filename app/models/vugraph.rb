@@ -1,6 +1,6 @@
 class Vugraph < ActiveRecord::Base
   attr_accessible :lin_file, :event, :segment
-  has_many :boards
+  has_many :boards, dependent: :destroy
 
   def self.download!(id)
     if id.class == Range
@@ -11,10 +11,7 @@ class Vugraph < ActiveRecord::Base
     end
     if exists? id
       v = find(id)
-      v.boards.each do |b|
-        b.delete
-      end
-      v.delete
+      v.destroy
     end
 
     download(id)

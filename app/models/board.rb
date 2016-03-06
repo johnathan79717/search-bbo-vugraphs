@@ -10,7 +10,7 @@ end
 class Board < ActiveRecord::Base
   attr_accessible :number, :hands, :auction, :explanation, :comments, :seats
   belongs_to :vugraph
-  has_many :players_boards, class_name: 'PlayersBoard'
+  has_many :players_boards, class_name: 'PlayersBoard', dependent: :destroy
   has_many :players, class_name: 'Player', through: :players_boards
 
   def parse_room_number players

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160305160429) do
+ActiveRecord::Schema.define(:version => 20160306063826) do
 
   create_table "blacklists", :force => true do |t|
     t.datetime "created_at", :null => false
@@ -37,7 +37,7 @@ ActiveRecord::Schema.define(:version => 20160305160429) do
     t.datetime "updated_at", :null => false
   end
 
-  create_table "players_boards", :id => false, :force => true do |t|
+  create_table "players_boards", :force => true do |t|
     t.integer "player_id"
     t.integer "board_id"
   end

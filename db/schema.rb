@@ -13,9 +13,49 @@
 
 ActiveRecord::Schema.define(version: 20160320152400) do
 
+  create_table "blacklists", force: :cascade do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "boards", force: :cascade do |t|
+    t.integer  "number"
+    t.string   "seats"
+    t.string   "hands"
+    t.string   "auction"
+    t.string   "explanation"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.text     "comments"
+    t.integer  "vugraph_id"
+    t.string   "room"
+  end
+
+  create_table "players", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "players_boards", force: :cascade do |t|
+    t.integer "player_id"
+    t.integer "board_id"
+  end
+
+  add_index "players_boards", ["board_id"], name: "index_players_boards_on_board_id"
+  add_index "players_boards", ["player_id"], name: "index_players_boards_on_player_id"
+
   create_table "todos", force: :cascade do |t|
     t.string   "title"
     t.text     "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "vugraphs", force: :cascade do |t|
+    t.text     "lin_file"
+    t.string   "event"
+    t.string   "segment"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

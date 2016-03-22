@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-
+gem 'protected_attributes'
 gem 'bootstrap-sass', '~> 3.3.6'
 gem 'autoprefixer-rails'
 

@@ -1,0 +1,79 @@
+= stylesheet_link_tag 'index'
+
+%h1 BBO Vugraph Search
+
+%p
+  Github repo:
+  =link_to 'https://github.com/johnathan79717/search-bbo-vugraphs'
+%p
+  Any bugs, desired features, or even comments are welcome.
+  =link_to 'https://github.com/johnathan79717/search-bbo-vugraphs/issues'
+
+%hr
+
+= form_tag({}, :method => :get) do
+  %h3 Enter the bidding sequence you want to search: (e.g. "1C X XX" or "1C - 1D - 1N")
+  %p pass = '-', double = 'X', redouble = 'XX', bids should be separated by single spaces.
+  %p= text_field_tag :sequence, @sequence, placeholder: 'Sequence', onClick: 'this.select();'
+  %p= text_field_tag :player, params[:player], placeholder: 'Player', onClick: 'this.select();'
+  %p= submit_tag 'Search'
+
+%hr
+%p
+  I pay Heroku $9/month for hosting this website. You're welcome to donate any amount to help me keep this website.
+  =render 'donate'
+%hr
+
+%h2= "#{@boards.size} results for #{@sequence}" if @sequence
+- @boards.each do |board|
+  - vugraph = board.vugraph
+  %h3= link_to "#{vugraph.event}, #{vugraph.segment}, Board #{board.number}", @link_prefix + vugraph.id.to_s, :target => '_blank'
+  - hands = board.hands.split(',')
+  - players = board.seats.split(',')
+  - nsVul, ewVul = vul(board.number)
+  - nDealer, eDealer, sDealer, wDealer = dealer(board.number)
+  %table
+    %tr
+      %td.board
+        %table.num
+          %tr
+            %td.corner
+            %td{:class => nsVul}= nDealer
+            %td.corner
+          %tr
+            %td{:class => ewVul}= wDealer
+            %td.num= board.number
+            %td{:class => ewVul}= eDealer
+          %tr
+            %td.corner
+            %td{:class => nsVul}= sDealer
+            %td.corner
+      %td.board= print_hand(players[2], hands[2])
+      %td.board
+    %tr
+      %td.board= print_hand(players[1], hands[1])
+      %td.board
+      %td.board= print_hand(players[3], hands[3])
+    %tr
+      %td.board
+      %td.board= print_hand(players[0], hands[0])
+  %br
+  %table
+    %tr
+      %td.bid W
+      %td.bid N
+      %td.bid E
+      %td.bid S
+    %tr
+      - shift = board.number % 4
+      - shift.times do
+        %td.bid
+      - board.auction.split(' ').each_with_index do |bid, n|
+        - if (n + shift) % 4 == 0 && n != 0
+          %tr
+        %td.bid= to_figure(bid)
+  %p
+    - board.explanation.split('\n').each do |item|
+      = to_figure(item)
+      %br
+

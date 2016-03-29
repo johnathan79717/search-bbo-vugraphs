@@ -1,6 +1,9 @@
 Rails.application.routes.draw do
-  resources :todos
-  root 'todos#index'
+  root to: 'main#index', as: 'index'
+  get 'download/:id', :to => 'main#download'
+  get 'vugraph/last', :to => 'main#last'
+  #resources :todos
+  #root 'todos#index'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

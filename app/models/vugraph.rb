@@ -106,24 +106,34 @@ class Vugraph < ActiveRecord::Base
     begin
       parse_event_segment
       parse_players
-      parse_board
     rescue ParseError => error
       puts "Error: #{id}.lin"
       Blacklist.add(id)
       puts error.message
     else
+      parse_board
       puts "#{id} has #{@@unsaved_boards.size} boards"
       begin
         save
         @@unsaved_boards.each do |b|
           b.save
         end
+      rescue Encoding::UndefinedConversionError
+        puts "Encoding::UndefinedConversionError"
       rescue ActiveRecord::StatementInvalid => e
         puts e.message.split("\n")[0]
         delete
         @@unsaved_boards.each do |b|
           b.delete
         end
+      end
+    ensure
+      begin
+        save
+      rescue Encoding::UndefinedConversionError
+        puts "Encoding::UndefinedConversionError"
+      rescue ActiveRecord::StatementInvalid => e
+        delete
       end
     end
   end

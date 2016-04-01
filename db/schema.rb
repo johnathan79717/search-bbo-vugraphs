@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160320152400) do
+ActiveRecord::Schema.define(version: 20160401020511) do
 
   create_table "blacklists", force: :cascade do |t|
     t.datetime "created_at"
@@ -30,6 +30,8 @@ ActiveRecord::Schema.define(version: 20160320152400) do
     t.integer  "vugraph_id"
     t.string   "room"
   end
+
+  add_index "boards", ["vugraph_id"], name: "index_boards_on_vugraph_id"
 
   create_table "players", force: :cascade do |t|
     t.string   "name"

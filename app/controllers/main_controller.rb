@@ -16,20 +16,18 @@ class MainController < ApplicationController
       return
     end
 
-    @boards =
-      if params[:player].empty?
-        Board.all
-      else
-        @player = Player.find_by_name(params[:player].upcase)
-        if @player
-          @player.boards
+    @boards = Rails.cache.fetch("#{params[:player]}/#{params[:sequence]}", expires_in: 1.minute) do
+      boards =
+        if params[:player].empty?
+          Board.all
         else
-          []
+          @player = Player.find_by_name(params[:player].upcase)
+          @player ? @player.boards : []
         end
-      end
 
-    @boards = @boards.find_all do |board|
-      board.auction.match(/\A(- ){,3}#{params[:sequence]}/)
+      boards.find_all do |board|
+        board.auction.match(/\A(- ){,3}#{params[:sequence]}/)
+      end
     end
 
     @boards = @boards.paginate(page: params[:page])

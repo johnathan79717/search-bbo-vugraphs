@@ -16,19 +16,32 @@ class MainController < ApplicationController
       return
     end
 
+    query = 'auction LIKE ? OR auction LIKE ? OR auction LIKE ? OR auction LIKE ?'
+    #sequences = [@sequence, '- ' + @sequence, '- ' * 2 + @sequence, '- ' * 3 + @sequence]
+    sequences = (0..3).map do |x|
+      '- ' * x + @sequence + '%'
+    end
+    p sequences
     @boards =
       if params[:player].empty?
-        @boards = Board.all
+        #@boards = Board.all
+        Board.where(query, *sequences)
       else
         @player = Player.find_by_name(params[:player].upcase)
         if @player
-          @player.boards
+          @player.boards.where(query, *sequences)
         else
           []
         end
-      end.find_all do |board|
-        #board.auction =~ /\A(- ){,3}#{params[:sequence]}/
-        board.auction.match(/\A(- ){,3}#{params[:sequence]}/)
+      #end.find_all do |board|
+        ##board.auction =~ /\A(- ){,3}#{params[:sequence]}/
+        #board.auction.match(/\A(- ){,3}#{params[:sequence]}/)
       end
+    
+    @boards.each do |b|
+      if b.hands.nil?
+        p b
+      end
+    end
   end
 end

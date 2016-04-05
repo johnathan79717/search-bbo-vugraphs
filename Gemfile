@@ -1,10 +1,11 @@
 source 'https://rubygems.org'
-#gem 'sprockets-rails', '2.3.3'
+
 gem 'haml'
 gem 'will_paginate', '~> 3.0.6'
 gem 'protected_attributes'
 gem 'bootstrap-sass', '~> 3.3.6'
 gem 'autoprefixer-rails'
+gem 'delayed_job_active_record'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.1'
